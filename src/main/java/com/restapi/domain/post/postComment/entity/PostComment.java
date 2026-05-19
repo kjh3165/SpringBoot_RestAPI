@@ -1,5 +1,6 @@
 package com.restapi.domain.post.postComment.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.restapi.domain.post.post.entity.Post;
 import com.restapi.global.jpa.entity.BaseEntity;
 import jakarta.persistence.Entity;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class PostComment extends BaseEntity {
     private String content;
 
+    @JsonIgnore
     @ManyToOne
     private Post post;
 
