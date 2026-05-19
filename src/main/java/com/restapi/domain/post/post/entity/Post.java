@@ -1,5 +1,6 @@
 package com.restapi.domain.post.post.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.restapi.domain.post.postComment.entity.PostComment;
 import com.restapi.global.jpa.entity.BaseEntity;
 import jakarta.persistence.Entity;
@@ -29,6 +30,7 @@ public class Post extends BaseEntity {
      * orphanRemoval = true: 컬렉션에서 자식을 제거하거나 child.post=null 하면 해당 자식 DELETE
      */
     @OneToMany(mappedBy = "post", fetch = LAZY, cascade = {PERSIST, REMOVE}, orphanRemoval = true)
+    @JsonIgnore
     private List<PostComment> comments = new ArrayList<>();
 
     public Post(String title, String content) {
