@@ -1,4 +1,6 @@
 package com.restapi.global.rsData;
 
-public record RsData(String resultCode, String msg) {
+import com.restapi.domain.post.postComment.dto.PostCommentDto;
+
+public record RsData(String resultCode, String msg, PostCommentDto data) {
 }
