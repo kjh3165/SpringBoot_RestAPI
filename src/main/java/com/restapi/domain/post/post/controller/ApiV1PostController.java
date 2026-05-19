@@ -3,7 +3,7 @@ package com.restapi.domain.post.post.controller;
 import com.restapi.domain.post.post.dto.PostDto;
 import com.restapi.domain.post.post.entity.Post;
 import com.restapi.domain.post.post.service.PostService;
-import com.restapi.global.rsData.ForPostRsData;
+import com.restapi.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,9 +39,9 @@ public class ApiV1PostController {
 
     @Transactional
     @GetMapping("/{id}/delete")
-    public ForPostRsData delete(@PathVariable long id) {
+    public RsData<PostDto> delete(@PathVariable long id) {
         Post post = postService.findById(id);
         postService.delete(post);
-        return new ForPostRsData("200-1", "%d번 게시글이 삭제되었습니다.".formatted(id), new PostDto(post));
+        return new RsData<>("200-1", "%d번 게시글이 삭제되었습니다.".formatted(id), new PostDto(post));
     }
 }
