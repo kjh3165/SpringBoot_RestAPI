@@ -2,6 +2,7 @@ package com.restapi.domain.post.post.controller;
 
 import com.restapi.domain.post.post.dto.PostDto;
 import com.restapi.domain.post.post.dto.PostWriteReqBody;
+import com.restapi.domain.post.post.dto.PostWriteResBody;
 import com.restapi.domain.post.post.entity.Post;
 import com.restapi.domain.post.post.service.PostService;
 import com.restapi.global.rsData.RsData;
@@ -48,15 +49,16 @@ public class ApiV1PostController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity write(@Valid @RequestBody PostWriteReqBody form) {
+    public ResponseEntity<RsData<PostWriteResBody>> write(@Valid @RequestBody PostWriteReqBody form) {
         Post post = postService.create(form.title(), form.content());
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body("성공적으로 등록되었습니다");
-//        return new RsData<>(
-//                "200-1",
-//                "%d번 게시글이 생성되었습니다.".formatted(post.getId()),
-//                new PostWriteResBody(postService.count(), new PostDto(post))
-//        );
+        return new ResponseEntity<>(
+                new RsData<>(
+                        "200-1",
+                        "%d번 게시글이 생성되었습니다.".formatted(post.getId()),
+                        new PostWriteResBody(postService.count(), new PostDto(post))
+                ),
+                HttpStatus.CREATED
+        );
     }
 }
