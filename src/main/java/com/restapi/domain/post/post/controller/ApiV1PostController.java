@@ -3,7 +3,6 @@ package com.restapi.domain.post.post.controller;
 import com.restapi.domain.post.post.dto.PostDto;
 import com.restapi.domain.post.post.dto.PostModifyReqBody;
 import com.restapi.domain.post.post.dto.PostWriteReqBody;
-import com.restapi.domain.post.post.dto.PostWriteResBody;
 import com.restapi.domain.post.post.entity.Post;
 import com.restapi.domain.post.post.service.PostService;
 import com.restapi.global.rsData.RsData;
@@ -48,13 +47,13 @@ public class ApiV1PostController {
 
     @Transactional
     @PostMapping
-    public RsData<PostWriteResBody> write(@Valid @RequestBody PostWriteReqBody reqBody) {
+    public RsData<PostDto> write(@Valid @RequestBody PostWriteReqBody reqBody) {
         Post post = postService.create(reqBody.title(), reqBody.content());
 
         return new RsData<>(
                 "201-1",
                 "%d번 게시글이 생성되었습니다.".formatted(post.getId()),
-                new PostWriteResBody(postService.count(), new PostDto(post))
+                new PostDto(post)
         );
     }
 
