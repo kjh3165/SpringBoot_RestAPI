@@ -1,6 +1,7 @@
 package com.restapi.domain.post.post.controller;
 
 import com.restapi.domain.post.post.dto.PostDto;
+import com.restapi.domain.post.post.dto.PostModifyReqBody;
 import com.restapi.domain.post.post.dto.PostWriteReqBody;
 import com.restapi.domain.post.post.dto.PostWriteResBody;
 import com.restapi.domain.post.post.entity.Post;
@@ -45,8 +46,8 @@ public class ApiV1PostController {
         return new RsData<>("200-1", "%d번 게시글이 삭제되었습니다.".formatted(id), new PostDto(post));
     }
 
-    @PostMapping
     @Transactional
+    @PostMapping
     public RsData<PostWriteResBody> write(@Valid @RequestBody PostWriteReqBody reqBody) {
         Post post = postService.create(reqBody.title(), reqBody.content());
 
@@ -55,5 +56,14 @@ public class ApiV1PostController {
                 "%d번 게시글이 생성되었습니다.".formatted(post.getId()),
                 new PostWriteResBody(postService.count(), new PostDto(post))
         );
+    }
+
+    @Transactional
+    @PutMapping("/{id}")
+    public RsData<Void> modify(@PathVariable long id, @Valid @RequestBody PostModifyReqBody reqBody) {
+        Post post = postService.findById(id);
+        postService.update(post, reqBody.title(), reqBody.content());
+        return new RsData<>("200-1",
+                "%d번 게시글이 수정되었습니다.".formatted(post.getId()));
     }
 }
