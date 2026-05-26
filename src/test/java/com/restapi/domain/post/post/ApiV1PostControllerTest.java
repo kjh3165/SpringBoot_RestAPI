@@ -179,7 +179,7 @@ public class ApiV1PostControllerTest {
     }
 
     @Test
-    @DisplayName("글 단건조회 에러")
+    @DisplayName("글 단건조회 404")
     void t6() throws Exception {
         long id = Integer.MAX_VALUE;
 
