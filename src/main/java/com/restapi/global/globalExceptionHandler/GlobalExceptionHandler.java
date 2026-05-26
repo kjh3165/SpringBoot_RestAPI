@@ -14,11 +14,14 @@ package com.restapi.global.globalExceptionHandler;
 
 import com.restapi.global.rsData.RsData;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -38,10 +41,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<RsData<Void>> handle(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult()
+                .getAllErrors()
+                .stream()
+                .filter(error -> error instanceof FieldError)
+                .map(error -> (FieldError) error)
+                .map(error -> error.getField() + "-" + error.getCode() + "-" + error.getDefaultMessage())
+                .sorted(Comparator.comparing(String::toString))
+                .collect(Collectors.joining("\n"));
+
         return new ResponseEntity<>(
                 new RsData<>(
                         "400-1",
-                        "제목을 필수 값입니다."
+                        message
                 ),
                 BAD_REQUEST
         );
