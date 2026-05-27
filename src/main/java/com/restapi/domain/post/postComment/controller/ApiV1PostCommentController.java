@@ -4,6 +4,7 @@ import com.restapi.domain.post.post.entity.Post;
 import com.restapi.domain.post.post.service.PostService;
 import com.restapi.domain.post.postComment.dto.PostCommentDto;
 import com.restapi.domain.post.postComment.dto.PostCommentModifyReqBody;
+import com.restapi.domain.post.postComment.dto.PostCommentWriteReqBody;
 import com.restapi.domain.post.postComment.entity.PostComment;
 import com.restapi.global.rsData.RsData;
 import jakarta.validation.Valid;
@@ -59,6 +60,28 @@ public class ApiV1PostCommentController {
         postService.deleteComment(post, postComment);
 
         return new RsData<>("200-1","%d번 댓글이 삭제되었습니다.".formatted(id));
+    }
+
+    @Transactional(readOnly = true)
+    @PostMapping
+    public RsData<PostCommentDto> write(
+            @PathVariable long postId,
+            @Valid @RequestBody PostCommentWriteReqBody reqBody
+    ) {
+        Post post = postService.findById(postId);
+        postService.createComment(post, reqBody.content());
+
+        // 트렌잭션 끝난 후 수행되야 하는 더티체킹 및 여가지 작업들을 지금 당장 수행시킴
+        postService.flush();
+
+        PostComment postComment = post.getComments().getLast();
+
+
+        return new RsData<PostCommentDto>(
+                "201-1",
+                "%d번 댓글이 작성되었습니다.".formatted(postComment.getId()),
+                new PostCommentDto(postComment)
+        );
     }
 
     @Transactional
