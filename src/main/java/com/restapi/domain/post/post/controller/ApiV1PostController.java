@@ -6,6 +6,8 @@ import com.restapi.domain.post.post.dto.PostWriteReqBody;
 import com.restapi.domain.post.post.entity.Post;
 import com.restapi.domain.post.post.service.PostService;
 import com.restapi.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +18,13 @@ import java.util.List;
 @RestController // @Controller + @ResponseBody
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
+@Tag(name="ApiV1PostController", description = "API 글 컨트롤러")
 public class ApiV1PostController {
     private final PostService postService;
 
     @Transactional(readOnly = true)
     @GetMapping
+    @Operation(summary = "다건 조회")
     public List<PostDto> getItems() {
         List<Post> items = postService.getList();
 
@@ -32,6 +36,7 @@ public class ApiV1PostController {
 
     @Transactional(readOnly = true)
     @GetMapping("/{id}")
+    @Operation(summary = "단건 조회")
     public PostDto getItem(@PathVariable long id) {
         Post item = postService.findById(id);
         return new PostDto(item);
@@ -39,6 +44,7 @@ public class ApiV1PostController {
 
     @Transactional
     @DeleteMapping("/{id}")
+    @Operation(summary = "삭제")
     public RsData<PostDto> delete(@PathVariable long id) {
         Post post = postService.findById(id);
         postService.delete(post);
@@ -47,6 +53,7 @@ public class ApiV1PostController {
 
     @Transactional
     @PostMapping
+    @Operation(summary = "작성")
     public RsData<PostDto> write(@Valid @RequestBody PostWriteReqBody reqBody) {
         Post post = postService.create(reqBody.title(), reqBody.content());
 
@@ -59,6 +66,7 @@ public class ApiV1PostController {
 
     @Transactional
     @PutMapping("/{id}")
+    @Operation(summary = "수정")
     public RsData<Void> modify(@PathVariable long id, @Valid @RequestBody PostModifyReqBody reqBody) {
         Post post = postService.findById(id);
         postService.update(post, reqBody.title(), reqBody.content());
